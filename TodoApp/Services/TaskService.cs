@@ -29,6 +29,15 @@ namespace TodoApp.Services
         {
             tasks.Remove(task);
         }
+
+        public void DisplayTasks()
+        {
+            foreach (var task in tasks)
+            {
+                Console.WriteLine(task.Item);
+            }
+        }
     }
+
 
 }
