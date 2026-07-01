@@ -8,5 +8,13 @@ namespace TodoApp.Models
 {
     internal class TaskItem
     {
+        public string Item {  get; set; }   
+
+        public TaskItem(string item) 
+        { 
+            this.Item = item;
+        }
+
     }
+
 }
