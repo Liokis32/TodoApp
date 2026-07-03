@@ -25,9 +25,13 @@ namespace TodoApp.Services
             tasks.Add(task);
         }
 
-        public void CompleteTask(TaskItem task)
+        public void CompleteTask(String task)
         {
-            tasks.Remove(task);
+            var found = tasks.Find(t => t.Item == task);
+            if (found != null)
+            {
+                tasks.Remove(found);
+            }
         }
 
         public void DisplayTasks()
