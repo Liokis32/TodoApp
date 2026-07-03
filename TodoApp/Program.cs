@@ -2,13 +2,13 @@
 using TodoApp.Models;
 
 TaskService taskService = new TaskService();
-
+taskService.LoadFromFile();
 while (true)
 {
     Console.WriteLine("1. New Task");
     Console.WriteLine("2. Complete Task");
     Console.WriteLine("3. Display Tasks");
-    Console.WriteLine("4. Exit");
+    Console.WriteLine("4. Save and Exit");
 
 
     var number = Console.ReadLine();
@@ -18,7 +18,9 @@ while (true)
         case "1":
             Console.WriteLine("Enter Item ");
             var item = Console.ReadLine();
-            TaskItem newTask = new TaskItem(item);
+            Console.WriteLine("Enter Priority ");
+            int priority = Convert.ToInt32(Console.ReadLine());
+            TaskItem newTask = new TaskItem(item, priority);
             taskService.AddTask(newTask);
             break;
 
@@ -33,6 +35,7 @@ while (true)
             break;
 
         case "4":
+            taskService.SaveToFile();
             return;
     }
 

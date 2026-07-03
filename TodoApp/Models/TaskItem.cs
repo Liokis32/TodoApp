@@ -9,10 +9,12 @@ namespace TodoApp.Models
     internal class TaskItem
     {
         public string Item {  get; set; }   
+        public int Priority { get; set; }
 
-        public TaskItem(string item) 
+        public TaskItem(string item, int priority) 
         { 
             this.Item = item;
+            this.Priority = priority;
         }
 
     }
