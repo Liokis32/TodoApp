@@ -1,0 +1,5 @@
+﻿CREATE TABLE Tasks (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Item NVARCHAR(255),
+    Priority INT
+);

@@ -5,6 +5,10 @@ using System.Threading.Tasks;
 using TodoApp.Models;
 using System.IO;
 using System.Linq;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using static System.Net.WebRequestMethods;
 
 
 namespace TodoApp.Services
@@ -13,6 +17,7 @@ namespace TodoApp.Services
     {
 
         public List<TaskItem> tasks;
+        private string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Todo;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
         public TaskService()
         {
@@ -23,11 +28,21 @@ namespace TodoApp.Services
 
         public void AddTask(TaskItem task)
         {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                string sql = "INSERT INTO Tasks (Item, Priority) VALUES (@Item, @Priority)";
+                db.Execute(sql, task);
+            }
             tasks.Add(task);
         }
 
         public void CompleteTask(String task)
         {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                string sql = "DELETE FROM Tasks WHERE Item = @task";
+                db.Execute(sql, new { task = task });
+            }
             var found = tasks.Find(t => t.Item == task);
             if (found != null)
             {
@@ -44,6 +59,22 @@ namespace TodoApp.Services
             }
         }
 
+        public void LoadFromBase()
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                var data = db.Query<TaskItem>("SELECT Item, Priority FROM Tasks").ToList();
+
+                tasks.Clear();
+                foreach (var item in data)
+                {
+                    tasks.Add(item);
+                }
+            }
+        }
+
+
+        /*
         public void SaveToFile()
         {
             string path = "Tasks.txt";
@@ -53,24 +84,28 @@ namespace TodoApp.Services
             }
         }
 
-        public void LoadFromFile()
-        {
-            string path = "Tasks.txt";
-            if (File.Exists(path))
+
+        
+            public void LoadFromFile()
             {
-                string[] readText = File.ReadAllLines(path, Encoding.UTF8);
-                tasks.Clear();
-                foreach (string s in readText)
+                string path = "Tasks.txt";
+                if (File.Exists(path))
                 {
-                    string[] part = s.Split(',');
-                    string item = part[0];
-                    int priority= Convert.ToInt32(part[1]);
-                    TaskItem Task = new TaskItem(item, priority);
-                    tasks.Add(Task);
+                    string[] readText = File.ReadAllLines(path, Encoding.UTF8);
+                    tasks.Clear();
+                    foreach (string s in readText)
+                    {
+                        string[] part = s.Split(',');
+                        string item = part[0];
+                        int priority= Convert.ToInt32(part[1]);
+                        TaskItem Task = new TaskItem(item, priority);
+                        tasks.Add(Task);
+                    }
                 }
             }
-        }
+        */
     }
+
 
 
 }
