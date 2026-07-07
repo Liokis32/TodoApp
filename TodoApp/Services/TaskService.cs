@@ -36,18 +36,25 @@ namespace TodoApp.Services
             tasks.Add(task);
         }
 
-        public void CompleteTask(String task)
+        public bool CompleteTask(String task)
         {
+            int existed = 0;
             using (IDbConnection db = new SqlConnection(connectionString))
             {
                 string sql = "DELETE FROM Tasks WHERE Item = @task";
-                db.Execute(sql, new { task = task });
+                existed = db.Execute(sql, new { task = task });
             }
-            var found = tasks.Find(t => t.Item == task);
-            if (found != null)
+            if (existed > 0 )
             {
-                tasks.Remove(found);
+                var found = tasks.Find(t => t.Item == task);
+                if (found != null)
+                {
+                    tasks.Remove(found);
+                }
+                return true;   
+
             }
+            return false;             
         }
 
         public void DisplayTasks()

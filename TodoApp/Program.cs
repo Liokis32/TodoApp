@@ -17,17 +17,31 @@ while (true)
     {
         case "1":
             Console.WriteLine("Enter Item ");
-            var item = Console.ReadLine();
-            Console.WriteLine("Enter Priority ");
-            int priority = Convert.ToInt32(Console.ReadLine());
+            var item = Console.ReadLine().Trim();
+            Console.WriteLine("Enter Priority (1-3):");
+            string input = Console.ReadLine();
+            int priority;
+            while (!int.TryParse(input, out priority) || priority < 1 || priority > 3)
+            {
+                Console.WriteLine("Invalid input! Please enter a number between 1 and 3:");
+                input = Console.ReadLine();
+            }
             TaskItem newTask = new TaskItem(item, priority);
             taskService.AddTask(newTask);
             break;
 
         case "2":
             Console.WriteLine("Enter the name of the task ");
-            var item2 = Console.ReadLine();
-            taskService.CompleteTask(item2);
+            var item2 = Console.ReadLine().Trim();
+            bool success = taskService.CompleteTask(item2);
+            if (success)
+            {
+                Console.WriteLine("Success: The task was found.");
+            }
+            else
+            {
+                Console.WriteLine("Error: Task not found.");
+            }
             break;
 
         case "3":
